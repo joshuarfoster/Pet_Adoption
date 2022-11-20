@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect
 from models import db, connect_db, Pet
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
-from forms import AddPet
+from forms import AddPet, EditPet
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///pets'
@@ -36,10 +36,10 @@ def add_pet():
     else:
         return render_template('add_pet.html', form = form)
 
-app.route('/<int:pet_id>', methods=["GET","POST"])
+@app.route('/<int:pet_id>', methods=["GET","POST"])
 def show_or_edit_pet(pet_id):
     pet = Pet.query.get_or_404(pet_id)
-    form = AddPet(obj=pet)
+    form = EditPet(obj=pet)
     if form.validate_on_submit():
         pet.photo_url = form.photo_url.data
         pet.notes = form.notes.data
